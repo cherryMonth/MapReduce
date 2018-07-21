@@ -1,0 +1,23 @@
+2018-07-21 10:02:43  [ main:17899 ] - [ ERROR ]  ZooKeeper exists failed after 4 attempts
+ 2018-07-21 10:02:43  [ main:17900 ] - [ ERROR ]  hconnection-0x1ab3a8c80x0, quorum=localhost:2181, baseZNode=/hbase Received unexpected KeeperException, re-throwing exception
+ org.apache.zookeeper.KeeperException$ConnectionLossException: KeeperErrorCode = ConnectionLoss for /hbase/hbaseid
+	at org.apache.zookeeper.KeeperException.create(KeeperException.java:99)
+	at org.apache.zookeeper.KeeperException.create(KeeperException.java:51)
+	at org.apache.zookeeper.ZooKeeper.exists(ZooKeeper.java:1045)
+	at org.apache.hadoop.hbase.zookeeper.RecoverableZooKeeper.exists(RecoverableZooKeeper.java:220)
+	at org.apache.hadoop.hbase.zookeeper.ZKUtil.checkExists(ZKUtil.java:419)
+	at org.apache.hadoop.hbase.zookeeper.ZKClusterId.readClusterIdZNode(ZKClusterId.java:65)
+	at org.apache.hadoop.hbase.client.ZooKeeperRegistry.getClusterId(ZooKeeperRegistry.java:105)
+	at org.apache.hadoop.hbase.client.ConnectionManager$HConnectionImplementation.retrieveClusterId(ConnectionManager.java:905)
+	at org.apache.hadoop.hbase.client.ConnectionManager$HConnectionImplementation.<init>(ConnectionManager.java:648)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.lang.reflect.Constructor.newInstance(Constructor.java:423)
+	at org.apache.hadoop.hbase.client.ConnectionFactory.createConnection(ConnectionFactory.java:238)
+	at org.apache.hadoop.hbase.client.ConnectionManager.createConnection(ConnectionManager.java:431)
+	at org.apache.hadoop.hbase.client.ConnectionManager.createConnection(ConnectionManager.java:424)
+	at org.apache.hadoop.hbase.client.ConnectionManager.getConnectionInternal(ConnectionManager.java:302)
+	at org.apache.hadoop.hbase.client.HTable.<init>(HTable.java:185)
+	at org.apache.hadoop.hbase.client.HTable.<init>(HTable.java:151)
+	at HbaseTest.main(HbaseTest.java:16)
