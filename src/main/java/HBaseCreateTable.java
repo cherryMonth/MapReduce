@@ -21,6 +21,8 @@ public class HBaseCreateTable {
      *
      * configuration.set("hbase.master", "192.168.1.21:60000");
      *
+     * 以下包含了 HBase基本的增、查、删操作
+     *
       */
 
 
@@ -83,8 +85,16 @@ public class HBaseCreateTable {
 
     public static void insertRow(String tableName, String rowkey, String colFamily, String col, String val) throws IOException {
         init();
+
+        /*
+        *
+        * org.apache.hadoop.hbase.client.HTable类：
+        * 该类的读写是非线程安全的，不再作为client API提供给开发用户使用，建议通过Table类替代。
+        *
+        * */
+
         Table table = connection.getTable(TableName.valueOf(tableName));
-        Put put = new Put(Bytes.toBytes(rowkey));
+        Put put = new Put(Bytes.toBytes(rowkey)); //　HBase的字段名都是字节数组
         put.addColumn(Bytes.toBytes(colFamily), Bytes.toBytes(col), Bytes.toBytes(val));
         table.put(put);
 
@@ -129,18 +139,40 @@ public class HBaseCreateTable {
         }
     }
 
-    public static void scanData(){
-
+    public static void scanData(String tableName, String start, String stop) throws IOException {
+        init();
+        Table table = connection.getTable(TableName.valueOf(tableName));
+        Scan scan = new Scan();
+        scan.setStartRow(Bytes.toBytes(start));
+        scan.setStopRow(Bytes.toBytes(stop));
+        ResultScanner resultScanner = table.getScanner(scan);
+        for(Result result: resultScanner)
+            showCell(result);
+        table.close();
+        close();
     }
 
+    public static void scanData(String tableName) throws IOException {
+        init();
+        Table table = connection.getTable(TableName.valueOf(tableName));
+        Scan scan = new Scan();
+        ResultScanner resultScanner = table.getScanner(scan);
+        for(Result result: resultScanner)
+            showCell(result);
+        table.close();
+        close();
+    }
 
-    public static void main(String [] args) throws IOException {
-        String [] cols = {"1", "2"};
+    public static void main(String [] args) throws IOException
+    {
+        String [] cols = {"value"};
+//        deleteTable("songjian");
         createTable("songjian", cols);
-        listTables();
-        insertRow("songjian", "first", "1", "first", "2");
+//        listTables();
+        insertRow("songjian", "1", "value", "first", "2");
 //        deleteRow("songjian", "first");
-        getDate("songjian", "first");
+//        getDate("songjian", "first");
+//        scanData("songjian");
     }
 
 }

@@ -20,7 +20,7 @@ public class ExampleClient {
         // Create table
         HBaseAdmin admin = new HBaseAdmin(config);
         try {
-            TableName tableName = TableName.valueOf("test1");
+            TableName tableName = TableName.valueOf("test2");
             HTableDescriptor htd = new HTableDescriptor(tableName);
             HColumnDescriptor hcd = new HColumnDescriptor("data");
             htd.addFamily(hcd);

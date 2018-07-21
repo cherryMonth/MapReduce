@@ -1,33 +1,49 @@
-//import org.apache.hadoop.conf.Configured;
-//import org.apache.hadoop.hbase.Cell;
-//import org.apache.hadoop.hbase.HBaseConfiguration;
-//import org.apache.hadoop.hbase.client.Result;
-//import org.apache.hadoop.hbase.client.Scan;
-//import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
-//import org.apache.hadoop.hbase.io.*;
-//import org.apache.hadoop.hbase.mapred.TableMap;
-//import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
-//import org.apache.hadoop.hbase.mapreduce.TableMapper;
-//import org.apache.hadoop.mapred.OutputCollector;
-//import org.apache.hadoop.mapred.Reporter;
-//import org.apache.hadoop.mapreduce.Job;
-//import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
-//import org.apache.hadoop.util.Tool;
-//import org.apache.hadoop.util.ToolRunner;
-//
-//import java.util.Map;
-//
-//public class RowCounter extends Configured implements Tool{
-//
-//        static final String NAME = "rowcounter";
-//
-//        static class RowCounterMapper implements TableMap<ImmutableBytesWritable, RowResult>{
-//            private static enum Counters {ROWS};
-//
-//            public void map(ImmutableBytesWritable row, Result result, OutputCollector<ImmutableBytesWritable, Result> out, Reporter reporter){
-//                boolean content = false;
-//                for(Map.Entry<byte [], Cell> e: result.)
-//            }
-//
-//        }
-//}
+import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.hbase.HBaseConfiguration;
+import org.apache.hadoop.hbase.client.Result;
+import org.apache.hadoop.hbase.client.Scan;
+import org.apache.hadoop.hbase.filter.FirstKeyOnlyFilter;
+import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
+import org.apache.hadoop.hbase.mapreduce.TableMapReduceUtil;
+import org.apache.hadoop.hbase.mapreduce.TableMapper;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.lib.output.NullOutputFormat;
+import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
+
+public class RowCounter extends Configured implements Tool {
+
+    static class RowCounterMapper extends TableMapper<ImmutableBytesWritable, Result> {
+        public static enum CounterSongjian { songjian } // mapreduce　计数器 必须要是枚举类型
+
+        @Override
+        public void map(ImmutableBytesWritable row, Result value, Context context) {
+            context.getCounter(CounterSongjian.songjian).increment(1);
+        }
+    }
+
+    @Override
+    public int run(String[] args) throws Exception {
+        String tableName = args[0];
+        Scan scan = new Scan();
+
+        // scan 可以设置过滤器　过滤掉不需要的行
+        // FirstKeyOnlyFilter　是默认的第一个KV
+        scan.setFilter(new FirstKeyOnlyFilter());
+
+        Job job = new Job(getConf(), getClass().getSimpleName());
+        job.setJarByClass(getClass());
+        TableMapReduceUtil.initTableMapperJob(tableName, scan,
+                RowCounterMapper.class, ImmutableBytesWritable.class, Result.class, job);
+        job.setNumReduceTasks(0);
+        job.setOutputFormatClass(NullOutputFormat.class);
+        return job.waitForCompletion(true) ? 0 : 1;
+    }
+
+    public static void main(String[] args) throws Exception {
+        String [] arg = {"test"};
+        int exitCode = ToolRunner.run(HBaseConfiguration.create(),
+                new RowCounter(), arg);
+        System.exit(exitCode);
+    }
+}
