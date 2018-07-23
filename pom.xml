@@ -111,5 +111,10 @@
             <version>${hbase.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.oracle</groupId>
+            <version>11.2.0</version>
+            <artifactId>ojdbc6</artifactId>
+        </dependency>
     </dependencies>
 </project>
