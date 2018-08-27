@@ -1,3 +1,5 @@
+package org.apache.hadoop.example;
+
 import java.io.IOException;
 import java.util.StringTokenizer;
 

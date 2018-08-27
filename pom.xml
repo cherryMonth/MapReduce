@@ -150,6 +150,6 @@
         </dependency>
 
         <!-- 此处为导入ojdbc命令 -->
-        <!-- install:install-file -Dfile=ojdbc6_g.jar -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0 -Dpackaging=jar -->
+        <!--mvn install:install-file -Dfile=ojdbc6_g.jar -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11.2.0 -Dpackaging=jar -->
     </dependencies>
 </project>
